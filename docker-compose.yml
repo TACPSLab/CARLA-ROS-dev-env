@@ -1,0 +1,36 @@
+services:
+
+  carla:
+    image: carlasim/carla:${CARLA_VERSION}
+    command: /bin/bash ./CarlaUE4.sh -carla-server -opengl -nosound -RenderOffScreen
+    ports:
+      - 2000:2000/tcp
+      - 2001:2001/tcp
+    privileged: true
+    deploy:
+      resources:
+        reservations:
+          devices:
+          - driver: nvidia
+            device_ids: ['0']
+            capabilities: [gpu]
+    environment:
+      DISPLAY: ${DISPLAY}
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+
+  ros-bridge:
+    image: carla-ros-bridge:melodic
+    build: 
+      context: ./ros-bridge
+      dockerfile: docker/Dockerfile
+      args:
+        ROS_DISTRO: ${ROS_DISTRO}
+        CARLA_VERSION: ${CARLA_VERSION}
+    depends_on:
+      - "carla"
+    command: >
+      /bin/bash -c 'source ./devel/setup.bash && \
+                    source ../carla/setup.bash && \
+                    while sleep 7; do roslaunch carla_ros_bridge carla_ros_bridge.launch; echo -e "\nReconnecting...\n"; done'
+    network_mode: host
