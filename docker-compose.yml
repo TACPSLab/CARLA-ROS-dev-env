@@ -20,7 +20,7 @@ services:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
 
   ros-bridge:
-    image: carla-ros-bridge:melodic
+    image: carla-ros-bridge:${ROS_DISTRO}
     build: 
       context: ./ros-bridge
       dockerfile: docker/Dockerfile
