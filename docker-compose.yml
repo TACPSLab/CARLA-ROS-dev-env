@@ -25,8 +25,8 @@ services:
       context: ./ros-bridge
       dockerfile: docker/Dockerfile
       args:
-        ROS_DISTRO: ${ROS_DISTRO}
         CARLA_VERSION: ${CARLA_VERSION}
+        ROS_DISTRO: ${ROS_DISTRO}
     depends_on:
       - "carla"
     command: >
