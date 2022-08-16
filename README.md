@@ -28,7 +28,7 @@ Clone this repo with `--recurse-submodules` option.
 
 Set `CARLA_VERSION` and `ROS_DISTRO` in the `.env` file to the demanded version/distro. Checkout the carla-ros-bridge (ros-bridge for short) submodule to the tag/branch same as the value of `CARLA_VERSION`; e.g. set `CARLA_VERSION=0.9.11` and `cd /path/to/ros-bridge && git checkout 0.9.11`.
 
-Pull the image of CARLA and build the image for ros-bridge by executing `docker compose build` in the directory contains `docker-compose.yml`.
+Executing `docker compose build` in the directory contains `docker-compose.yml` pulls the image of CARLA and builds the image for ros-bridge.
 
 Start CARLA and ros-bridge simultaneously: `docker compose up -d`
 
@@ -36,15 +36,12 @@ Follow the logs of two containers: `docker compose log -f`
 
 Note that the initial ros-bridge connection may fail because the timeout is [set too short](ros-bridge/carla_ros_bridge/src/carla_ros_bridge/bridge.py#392) and attempt to reconnect. Please verify that ros-bridge is successfully connecting to CARLA by monitoring the log.
 
+### Workspace
+
 The first half explains how to launch the containerised CARLA and ros-bridge using this repo. The second half will discuss how to use this environment for development.
 
-It is possible to directly develop on the host which has corresponding ROS distro (that ros-bridge container is using) installed. However, the preferred approach is to start a containerised workspace features corresponding ROS distro and develop inside the container. For example, CARLA 0.9.11 and ros-bridge 0.9.11 built upon ROS **Melodic** have been started on a **Linux** host which has multiple **Nvidia** GPUs. Executing
+It is possible to directly develop on the host which has corresponding ROS distro (that ros-bridge container is using) installed. However, the preferred approach is to start a containerised workspace features corresponding ROS distro and develop inside the container. For example, CARLA 0.9.11 and ros-bridge 0.9.11 built upon ROS **Noetic** have been started on a **Linux** host which has multiple **Nvidia** GPUs. Executing
 ```
-docker run -d -t --name workspace --net=host --privileged --gpus 0 -e NVIDIA_VISIBLE_DEVICES=all -e NVIDIA_DRIVER_CAPABILITIES=all -e QT_X11_NO_MITSHM=1 -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix:rw osrf/ros:melodic-desktop-full
+docker run -d -t --name workspace --net=host --privileged --gpus 0 -e NVIDIA_VISIBLE_DEVICES=all -e NVIDIA_DRIVER_CAPABILITIES=all -e QT_X11_NO_MITSHM=1 -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix:rw osrf/ros:noetic-desktop-full
 ```
-starts a container, which can display GUI on the host and has access to host's first GPU, from `osrf/ros:melodic-desktop-full` image. Next, attach the container using VSCode with `Remote-Containers` plugin installed. Then, open a directory inside the container as project root using the intergrated file explorer within VSCode. Thus far, a basic containerised workspace has been built.
-
-To be continued
-- [docker commit](https://docs.docker.com/engine/reference/commandline/commit/)
-- [Docker's Dev Environments feature](https://docs.docker.com/desktop/dev-environments/)
-- [Use a Docker container as a development environment with Visual Studio Code](https://docs.microsoft.com/en-us/learn/modules/use-docker-container-dev-env-vs-code/)
+starts a container, which can display GUI on the host and has access to host's first GPU, from `osrf/ros:noetic-desktop-full` image. Next, attach the container using VSCode with `Remote-Containers` plugin installed. Then, open a directory inside the container as project root using the intergrated file explorer within VSCode. Thus far, a basic containerised workspace has been built.
