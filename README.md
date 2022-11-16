@@ -1,3 +1,10 @@
+## Supported combination
+
+CARLA_VERSION | ROS_DISTRO
+:-:|:-:
+0.9.12 | noetic
+
+
 ## Cross-platform (untested)
 
 Some of the configurations in the Compose file are only applicable to Linux. Specifically,
@@ -5,8 +12,8 @@ Some of the configurations in the Compose file are only applicable to Linux. Spe
 # X11 forwarding to view GUI applications running on containers
 environment:
   DISPLAY: ${DISPLAY}
-volumes:
-  - /tmp/.X11-unix:/tmp/.X11-unix:rw
+# volumes:
+#   - /tmp/.X11-unix:/tmp/.X11-unix:rw
 
 [...]
 
@@ -22,11 +29,12 @@ devices:
 ```
 should be set to requisitioned GPU(s).
 
+
 ## How to use
 
 Clone this repo with `--recurse-submodules` option.
 
-Set `CARLA_VERSION` and `ROS_DISTRO` in the `.env` file to the demanded version/distro. Checkout the carla-ros-bridge (ros-bridge for short) submodule to the tag/branch same as the value of `CARLA_VERSION`; e.g. set `CARLA_VERSION=0.9.11` and `cd /path/to/ros-bridge && git checkout 0.9.11`.
+Set `CARLA_VERSION` and `ROS_DISTRO` in the `.env` file to the demanded version/distro, also set `UID` and `GID` to the current user's `UID` and `GID`.
 
 Executing `docker compose build` in the directory contains `docker-compose.yml` pulls the image of CARLA and builds the image for ros-bridge.
 

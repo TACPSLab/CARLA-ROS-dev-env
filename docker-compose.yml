@@ -1,6 +1,16 @@
 services:
 
+  checkout-ros-bridge:
+    container_name: checkout-ros-bridge
+    image: alpine/git:latest
+    user: ${UID}:${GID}
+    volumes:
+      - ./:/git
+    command: >
+      submodule foreach git checkout ${CARLA_VERSION}
+
   carla:
+    container_name: carla
     image: carlasim/carla:${CARLA_VERSION}
     command: /bin/bash ./CarlaUE4.sh -carla-server -opengl -nosound -RenderOffScreen
     ports:
@@ -16,10 +26,11 @@ services:
             capabilities: [gpu]
     environment:
       DISPLAY: ${DISPLAY}
-    volumes:
-      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    # volumes:
+    #   - /tmp/.X11-unix:/tmp/.X11-unix:rw
 
-  ros-bridge:
+  carla-ros-bridge:
+    container_name: carla-ros-bridge
     image: carla-ros-bridge:${CARLA_VERSION}-${ROS_DISTRO}
     build: 
       context: ./ros-bridge
